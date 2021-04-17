@@ -31,3 +31,15 @@ from src.utils import train_val_test_split
 funnel = pd.read_csv('train_data/funnel.csv')
 train, val, test = train_val_test_split(funnel, (0.8, 0.1, 0.1))
 ```
+
+## Calculate profit
+
+There is a simple utility in `src.utils` to calculate profit for each person in the dataset. Use it like this
+
+```python
+import pandas as pd
+from src.utils import calculate_profit
+
+funnel = pd.read_csv('train_data/funnel.csv')
+profit = calculate_profit(funnel) # this is a pd.Series
+```
