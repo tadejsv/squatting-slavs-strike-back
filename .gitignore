@@ -3,7 +3,7 @@
 /catboost_info
 /data
 submission.csv
-submit.csv
+submit.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
