@@ -52,7 +52,8 @@ Here we list our results, so we can stay updated with what scores we are getting
 
 | name        | val_score  | test_score | submission score | 
 | ------------|:----------:|:----------:|:----------------:|
-| client + balance feats  | | 3074.36 | 2907.5 |
+| client + balance + aum feats  | 3607.06 | 2944.95 | 3101.47 |
+| client + balance feats  | 3345.24 | 3074.36 | 2907.5 |
 | client feats            | | 1730.64 | |
 | balance feats           | | 1625.17 | |
 
