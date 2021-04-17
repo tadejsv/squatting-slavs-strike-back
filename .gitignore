@@ -1,6 +1,9 @@
 /train_data
 /.vscode
 /catboost_info
+/models
+/data
+submission.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

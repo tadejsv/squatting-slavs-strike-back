@@ -1,9 +1,8 @@
 all: build
 
 build:
-	echo "PING!"
-	cat ./archive_name
+	echo "Building"
+	bash build.sh
 run:
+	echo "Running"
 	bash run.sh
-train:
-	bash train.sh
