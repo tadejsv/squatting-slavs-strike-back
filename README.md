@@ -44,6 +44,31 @@ funnel = pd.read_csv('train_data/funnel.csv')
 profit = calculate_profit(funnel) # this is a pd.Series
 ```
 
+## Our results
+
+Here we list our results, so we can stay updated with what scores we are getting
+
+### Tadej
+
+| name        | val_score  | test_score | submission score | 
+| ------------|:----------:|:----------:|:----------------:|
+| client + balance feats  | | 26439.51 | 2907.5 |
+| client feats            | | 19279.12 | |
+| balance feats           | | 28876.93 | |
+
+### Marina
+
+| name        | val_score  | test_score | submission score | 
+| ------------|:----------:|:----------:|:----------------:|
+| ??  | ?? | ?? | ?? |
+
+### Anastasia
+
+| name        | val_score  | test_score | submission score | 
+| ------------|:----------:|:----------:|:----------------:|
+| ??  | ?? | ?? | ?? |
+
+
 ## Preparing for submission
 
 To prepare for submission, you need to do some steps
@@ -75,7 +100,7 @@ Once you have your scripts, test them. Make sure they are only reading from `dat
 
 ### Change the `.sh` scripts
 
-All you need to do in them is to replace the name of the python script. Here we will have merge conflicts unfortunatelly 🙃
+All you need to do in them is to replace the name of the python script in `run.sh` and `build.sh`. Here we will have merge conflicts unfortunatelly 🙃
 
 ### Test your code
 
