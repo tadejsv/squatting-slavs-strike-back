@@ -26,3 +26,14 @@ def train_val_test_split(
     test = val_test[~val_test.index.isin(val.index)]
 
     return train, val, test
+
+
+CALL_COST = 400 / 0.1
+
+
+def calculate_profit(df: pd.DataFrame) -> pd.Series:
+    """Calculate profit """
+
+    profit = df["sale_flg"] * df["sale_amount"].fillna(0) - df["contacts"] * CALL_COST
+
+    return profit
