@@ -80,7 +80,7 @@ In evaluation the data will be in the `data/` folder. Create this folder (don't 
 
 ### Save your model
 
-Save your model inside the `models/` folder. I would also suggest to train it on full dataset first (not just the train split).
+Save your model inside the `models/` folder. I would also suggest to train it on full dataset first (not just the train split) - unless of course you were using some kind of early stopping or similar.
 
 ### Prepare your scripts
 
