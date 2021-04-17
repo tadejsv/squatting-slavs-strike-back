@@ -45,6 +45,35 @@ def make_features():
     del diffs, account_sums, last_month_avg, avg_range
 
     #######################
+    # Make aum features
+
+    aum = pd.read_csv('train_data/aum.csv')
+
+    # Sum up across all accounts
+    aum_sums = aum.groupby(['client_id', 'month_end_dt'])[['balance_rur_amt']].sum()
+    del aum
+
+    # Get STD for last few months for client
+    aum_std = aum_sums.std(level='client_id', skipna=True)
+
+    # Get the average amount in the last month
+    last_month_aum = aum_sums.iloc[aum_sums.index.get_level_values('month_end_dt') == '2019-08-31']
+    last_month_aum = last_month_aum['balance_rur_amt']
+    last_month_aum.index = last_month_aum.index.droplevel('month_end_dt')
+
+    # Get differences from the average in the last month
+    aum_sums['diff_last_month'] = aum_sums['balance_rur_amt'] - last_month_aum
+    diffs = aum_sums['diff_last_month'].reset_index().query('month_end_dt != "2019-08-31"')
+    diffs = diffs.pivot(index='client_id', columns='month_end_dt')
+
+    # Put together all balance features
+    diffs.columns = [f'aum_diff_{c[1]}' for c in diffs.columns]
+    aum_ft = diffs
+    aum_ft['aum_std'] = aum_std
+    aum_ft['aum_last_month'] = last_month_aum
+    del diffs, aum_std, last_month_aum
+
+    #######################
     # Make client features
 
     client = pd.read_csv("data/client.csv")
@@ -77,7 +106,8 @@ def make_features():
 
     full_data = pd.concat([
         balance_ft,
-        client_ft
+        client_ft,
+        aum_ft,
     ], axis=1)
     full_data.to_pickle('final_version.pickle')
 
