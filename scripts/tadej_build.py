@@ -47,7 +47,7 @@ def make_features():
     #######################
     # Make aum features
 
-    aum = pd.read_csv('train_data/aum.csv')
+    aum = pd.read_csv('data/aum.csv')
 
     # Sum up across all accounts
     aum_sums = aum.groupby(['client_id', 'month_end_dt'])[['balance_rur_amt']].sum()
