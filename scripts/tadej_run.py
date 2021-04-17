@@ -6,7 +6,11 @@ from catboost import CatBoostClassifier, Pool
 def predict():
     CAT_FEATURES = ['gender', 'region', 'city', 'education']
 
-    model = CatBoostClassifier().load_model('models/tadej_model.cbm', 'cbm')
+    try:
+        model = CatBoostClassifier().load_model('models/tadej_model.cbm', 'cbm')
+    except:
+        model = CatBoostClassifier().load_model('tadej_model.cbm', 'cbm')
+    
     data = pd.read_pickle('data/final_version.pickle')
     data_pool = Pool(data = data, cat_features=CAT_FEATURES)
 
