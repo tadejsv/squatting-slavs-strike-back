@@ -11,7 +11,7 @@ def predict():
     except:
         model = CatBoostClassifier().load_model('tadej_model.cbm', 'cbm')
     
-    data = pd.read_pickle('data/final_version.pickle')
+    data = pd.read_pickle('final_version.pickle')
     data_pool = Pool(data = data, cat_features=CAT_FEATURES)
 
     target = model.predict(data_pool)

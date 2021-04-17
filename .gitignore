@@ -4,6 +4,7 @@
 /data
 submission.csv
 submit.zip
+final_version.pickle
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

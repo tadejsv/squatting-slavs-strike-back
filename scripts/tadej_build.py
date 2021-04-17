@@ -76,7 +76,7 @@ def make_features():
     # Merge all features and save
 
     full_data = pd.concat([balance_ft, client_ft], axis=1)
-    full_data.to_pickle('data/final_version.pickle')
+    full_data.to_pickle('final_version.pickle')
 
 
 if __name__ == "__main__":
