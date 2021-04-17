@@ -14,4 +14,4 @@ After you are inside, also install `git` and `openssh-server` using
 apt-get update && apt-get install git openssh-server
 ```
 
-Finally, donwload extract training data to a folder called `train_data`.
+Finally, donwload extract training data to a folder called `train_data` (so we all have the same file structure).
