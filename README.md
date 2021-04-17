@@ -15,3 +15,19 @@ apt-get update && apt-get install git openssh-server
 ```
 
 Finally, donwload extract training data to a folder called `train_data` (so we all have the same file structure).
+
+## Splitting datasets into train/val/test
+
+To ensure our results are comparable, we should all work with the same test/val/train split.
+
+If I am not mistaken, it only matters that `funnel.csv` file is split, the rest is merged to it anyway, so as long as inner joins are used everything should be properly separated.
+
+I have created a `train_val_test_split` function, which creates this split in a deterministic way. I propose 80/10/10 split. Here's how you can do it in your code
+
+```python
+import pandas as pd
+from src.utils import train_val_test_split
+
+funnel = pd.read_csv('train_data/funnel.csv')
+train, val, test = train_val_test_split(funnel, (0.8, 0.1, 0.1))
+```
