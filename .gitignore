@@ -2,6 +2,7 @@
 /.vscode
 /catboost_info
 /data
+/check_zip
 submission.csv
 submit.zip
 final_version.pickle
