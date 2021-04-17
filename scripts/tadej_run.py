@@ -4,8 +4,7 @@ from catboost import CatBoostClassifier, Pool
 
 
 def predict():
-    # CAT_FEATURES = ['gender', 'region', 'city', 'education']
-    CAT_FEATURES = None
+    CAT_FEATURES = ['gender', 'region', 'city', 'education']
 
     try:
         model = CatBoostClassifier().load_model('models/tadej_model.cbm', 'cbm')

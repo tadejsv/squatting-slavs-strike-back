@@ -77,7 +77,7 @@ def make_features():
 
     full_data = pd.concat([
         balance_ft,
-        # client_ft
+        client_ft
     ], axis=1)
     full_data.to_pickle('final_version.pickle')
 
