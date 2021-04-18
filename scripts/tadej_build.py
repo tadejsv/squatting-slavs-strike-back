@@ -2,6 +2,7 @@ import gc
 
 import numpy as np
 import pandas as pd
+from pandas.tseries.offsets import MonthEnd
 
 
 def make_features():
@@ -119,14 +120,47 @@ def make_features():
     del temp_trs
     gc.collect()
 
+
+    #######################
+    # Make payment features
+    payments = pd.read_csv('data/payments.csv')
+
+    # Get pensioneers
+    pensioneers = payments.query('pmnts_name == "Pension receipts"').client_id.unique()
+    pensioneers = pd.DataFrame({'is_pensioneer': 1}, index=pensioneers)
+
+    # Get date to first of month for grouping
+    payments['month'] = pd.to_datetime(payments['day_dt']).apply(lambda x: x + MonthEnd(1))
+    payments_months = payments.groupby(['client_id', 'month']).sum('sum_rur').reset_index()
+    del payments
+
+    payments_months = payments_months.pivot(index='client_id', columns='month')
+    payments_months.columns = [f'payments_{c[1].strftime("%Y_%m_%d")}' for c in payments_months.columns]
+    payments_months['payments_mean'] = payments_months.mean(axis=1)
+    payments_months['payments_std'] = payments_months.std(axis=1)
+
+    payments_ft = pd.concat([
+        payments_months,
+        pensioneers
+    ], axis=1).fillna({'is_pensioneer': 0})
+    del payments_months, pensioneers
+
+    ############################
+    # Caclculate mystery features
+    mystery_feats = pd.read_csv('data/funnel.csv', usecols=['client_id'] + [f'feature_{i}' for i in range(1, 11)])
+    mystery_feats = mystery_feats.set_index('client_id')
+    mystery_feats['feature_1'] = mystery_feats['feature_1'].astype(str)
+
     #############################
     # Merge all features and save
 
     full_data = pd.concat([
         balance_ft,
-        client_ft,
         aum_ft,
+        client_ft,
         transaction_ft,
+        payments_ft,
+        mystery_feats   
     ], axis=1)
     full_data = full_data.fillna({'mcc_cd': 'nan'})    
     full_data.to_pickle('final_version.pickle')

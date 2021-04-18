@@ -50,7 +50,7 @@ class ProfitMetric(object):
     def is_max_optimal(self):
         return True
 
-    def evaluate(self, approxes, target, weight):
+    def evaluate(self, approxes, target, weight=None):
         profit_sum = 0
         count = 0 
 
