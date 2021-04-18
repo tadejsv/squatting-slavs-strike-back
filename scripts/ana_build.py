@@ -4,7 +4,23 @@ import gc
 
 
 def make_features():
+    
+    #######################
+    # Make transaction features
+    transaction = pd.read_csv('data/trxn.csv')
+    column_names = ['client_id', 'tran_amt_rur', 'mcc_cd']
+    transaction_ft = transaction[column_names]
+    del transaction
+    gc.collect()
+    transaction_ft['mcc_cd'] = transaction_ft['mcc_cd'].astype('str')
 
+    temp_trs = transaction_ft.groupby(['client_id', 'mcc_cd']).sum().reset_index()
+    transaction_ft = temp_trs.loc[temp_trs.groupby('client_id').tran_amt_rur.idxmax()]
+    transaction_ft = transaction_ft.set_index('client_id')
+    transaction_ft['tran_amt_rur'] = transaction_ft['tran_amt_rur'].fillna('nan')
+    del temp_trs
+    gc.collect()
+    
     #######################
     # Make balance features
 
@@ -107,20 +123,6 @@ def make_features():
         "nan"
     )
     del region_counts, top_regions, city_counts, top_cities
-    gc.collect()
-    
-    #######################
-    # Make transaction features
-    transaction = pd.read_csv('data/trxn.csv')
-    column_names = ['client_id', 'tran_amt_rur', 'mcc_cd']
-    transaction_ft = transaction[column_names]
-    transaction_ft['mcc_cd'] = transaction_ft['mcc_cd'].astype('str')
-
-    temp_trs = transaction_ft.groupby(['client_id', 'mcc_cd']).sum().reset_index()
-    transaction_ft = temp_trs.loc[temp_trs.groupby('client_id').tran_amt_rur.idxmax()]
-    transaction_ft = transaction_ft.set_index('client_id')
-    transaction_ft['tran_amt_rur'] = transaction_ft['tran_amt_rur'].fillna('nan')
-    del transaction, temp_trs
     gc.collect()
 
     #############################
