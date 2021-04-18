@@ -43,7 +43,7 @@ def make_features():
     diffs.columns = [f"balance_diff_{c[1]}" for c in diffs.columns]
     balance_ft = diffs
     balance_ft["avg_range"] = avg_range
-    balance_ft["last_month_avg"] = last_month_avg
+    balance_ft["avg_last_balance"] = last_month_avg
     del diffs, account_sums, last_month_avg, avg_range
 
     #######################
