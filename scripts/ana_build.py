@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import gc
 
 
 def make_features():
@@ -14,6 +15,7 @@ def make_features():
         ["avg_bal_sum_rur", "max_bal_sum_rur", "min_bal_sum_rur"]
     ].sum()
     del balances
+    gc.collect()
 
     # Get average range (max - min) for all clients
     account_sums["range"] = (
@@ -43,6 +45,7 @@ def make_features():
     balance_ft["avg_range"] = avg_range
     balance_ft["last_month_avg"] = last_month_avg
     del diffs, account_sums, last_month_avg, avg_range
+    gc.collect()
 
     #######################
     # Make aum features
@@ -52,6 +55,7 @@ def make_features():
     # Sum up across all accounts
     aum_sums = aum.groupby(['client_id', 'month_end_dt'])[['balance_rur_amt']].sum()
     del aum
+    gc.collect()
 
     # Get STD for last few months for client
     aum_std = aum_sums.std(level='client_id', skipna=True)
@@ -71,7 +75,8 @@ def make_features():
     aum_ft = diffs
     aum_ft['aum_std'] = aum_std
     aum_ft['aum_last_month'] = last_month_aum
-    del diffs, aum_std, last_month_aum
+    del diffs, aum_sums, aum_std, last_month_aum
+    gc.collect()
 
     #######################
     # Make client features
@@ -83,6 +88,7 @@ def make_features():
         ["gender", "age", "region", "city", "education"]
     ]
     del client
+    gc.collect()
 
     # Filter out cities and region to only those above 200, make them categorical (not numerical)
     region_counts = client_ft["region"].value_counts(dropna=False)
@@ -100,30 +106,32 @@ def make_features():
     client_ft[["gender", "education"]] = client_ft[["gender", "education"]].fillna(
         "nan"
     )
+    del region_counts, top_regions, city_counts, top_cities
+    gc.collect()
     
     #######################
     # Make transaction features
     transaction = pd.read_csv('data/trxn.csv')
-#     column_names = ['client_id', 'tran_amt_rur', 'mcc_cd']
-#     transaction_ft = transaction[column_names]
-#     transaction_ft['mcc_cd'] = transaction_ft['mcc_cd'].astype('str')
+    column_names = ['client_id', 'tran_amt_rur', 'mcc_cd']
+    transaction_ft = transaction[column_names]
+    transaction_ft['mcc_cd'] = transaction_ft['mcc_cd'].astype('str')
 
-#     temp_trs = transaction_ft.groupby(['client_id', 'mcc_cd']).sum().reset_index()
-#     transaction_ft = temp_trs.loc[temp_trs.groupby('client_id').tran_amt_rur.idxmax()]
-#     transaction_ft = transaction_ft.set_index('client_id')
-#     transaction_ft['tran_amt_rur'] = transaction_ft['tran_amt_rur'].fillna('nan')
-
+    temp_trs = transaction_ft.groupby(['client_id', 'mcc_cd']).sum().reset_index()
+    transaction_ft = temp_trs.loc[temp_trs.groupby('client_id').tran_amt_rur.idxmax()]
+    transaction_ft = transaction_ft.set_index('client_id')
+    transaction_ft['tran_amt_rur'] = transaction_ft['tran_amt_rur'].fillna('nan')
+    del transaction, temp_trs
+    gc.collect()
 
     #############################
     # Merge all features and save
 
-    LABEL_COLS = ['sale_flg', 'sale_amount', 'contacts', 'profit', 'profitable']
     full_data = pd.concat([
         balance_ft,
         client_ft,
-#         transaction_ft
+        transaction_ft
     ], axis=1)
-#     full_data[['mcc_cd', 'tran_amt_rur']] = full_data[['mcc_cd', 'tran_amt_rur']].fillna('nan')
+    full_data[['mcc_cd', 'tran_amt_rur']] = full_data[['mcc_cd', 'tran_amt_rur']].fillna('nan')
     full_data.to_pickle('final_version.pickle')
 
 
