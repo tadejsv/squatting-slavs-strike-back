@@ -68,7 +68,7 @@ Here we list our results, so we can stay updated with what scores we are getting
 
 | name        | val_score  | test_score | submission score | 
 | ------------|:----------:|:----------:|:----------------:|
-| ??  | ?? | ?? | ?? |
+| transaction + client + balance + aum feats *with regressor*   | 5432.08 | 3001.63 | 5476.3 |
 
 
 ## Preparing for submission
