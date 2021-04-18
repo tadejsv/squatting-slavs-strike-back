@@ -42,3 +42,23 @@ def calculate_profit(df: pd.DataFrame) -> pd.Series:
 
 def signed_log10_1p(x):
     return np.sign(x) * np.log10(np.abs(x) + 1)
+
+class ProfitMetric(object):
+    def get_final_error(self, error, weight):
+        return error / (weight + 1e-38)
+
+    def is_max_optimal(self):
+        return True
+
+    def evaluate(self, approxes, target, weight):
+        profit_sum = 0
+        count = 0 
+
+        for i in range(len(target)):
+            count += 1
+
+            count_item = approxes[i] > 0
+            if count_item:
+                profit_sum += target[i]
+
+        return profit_sum / count
