@@ -7,8 +7,8 @@ def make_features():
     
     #######################
     # Make transaction features
-    transaction = pd.read_csv('data/trxn.csv')
     column_names = ['client_id', 'tran_amt_rur', 'mcc_cd']
+    transaction = pd.read_csv('data/trxn.csv', usecols=column_names)
     transaction_ft = transaction[column_names]
     del transaction
     gc.collect()
