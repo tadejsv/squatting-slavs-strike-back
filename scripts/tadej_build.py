@@ -41,48 +41,37 @@ def make_features():
     avg_range = account_sums["range"].mean(level="client_id", skipna=True)
 
     # Get the average amount in the last month
-    last_month_avg = account_sums.iloc[
+    balance_last = account_sums.iloc[
         account_sums.index.get_level_values("month_end_dt") == "2019-08-31"
     ]
-    last_month_avg = last_month_avg["avg_bal_sum_rur"]
-    last_month_avg.index = last_month_avg.index.droplevel("month_end_dt")
+    balance_last = balance_last["avg_bal_sum_rur"]
+    balance_last.index = balance_last.index.droplevel("month_end_dt")
     all_avg = account_sums["avg_bal_sum_rur"].mean(level=0)
 
     # Get mean avg by quarters
     bal_mean_q = balances.groupby(["client_id", "quarter"])["avg_bal_sum_rur"].mean()
 
-    # Get last month avg - 3 months avg
     m3 = bal_mean_q[bal_mean_q.index.get_level_values("quarter") == "Q4"].droplevel(1)
-    m3_diff = last_month_avg - m3
-
-    # Get last month avg - 6 months avg
-    m6_diff = bal_mean_q[
+    m6 = bal_mean_q[
         bal_mean_q.index.get_level_values("quarter").isin(["Q4", "Q3"])
     ].mean(level=0)
-    m6_diff = last_month_avg - m6_diff
-
-    # Get last 3 months - last 6 months
-    m3_m6diff = m6_diff - m3_diff
-
-    # Get last 3 months - last 12 months
-    m3_m12diff = bal_mean_q.mean(level=0)
-    m3_m12diff = m3 - m3_m12diff
+    m12 = bal_mean_q.mean(level=0)
 
     balance_ft = pd.DataFrame(
         {
             "balance_range": avg_range,
-            "balance_last_avg": last_month_avg,
+            "balance_last_avg": balance_last,
             "balance_m3": m3,
             "balance_all_avg": all_avg,
             "balance_rel_range": avg_range / all_avg,
-            "balance_diff_m3": m3_diff,
-            "balance_diff_m6": m6_diff,
-            "balance_diff_m3_m6": m3_m6diff,
-            "balance_diff_m3_m12": m3_m12diff,
-            "balance_diff_m3_rel": m3_diff / last_month_avg,
-            "balance_diff_m6_rel": m6_diff / last_month_avg,
-            "balance_diff_m3_m6_rel": m3_m6diff / last_month_avg,
-            "balance_diff_m3_m12_rel": m3_m12diff / last_month_avg,
+            "balance_diff_m3": balance_last - m3,
+            "balance_diff_m6": balance_last - m6,
+            "balance_diff_m3_m6": m3 - m6,
+            "balance_diff_m3_m12": m3 - m12,
+            "balance_diff_m3_rel": (balance_last - m3) / balance_last,
+            "balance_diff_m6_rel": (balance_last - m6) / balance_last,
+            "balance_diff_m3_m6_rel": (m3 - m6) / balance_last,
+            "balance_diff_m3_m12_rel": (m3 - m12) / balance_last,
         }
     )
     del (
@@ -90,13 +79,11 @@ def make_features():
         balances,
         account_sums,
         avg_range,
-        last_month_avg,
+        balance_last,
         bal_mean_q,
         m3,
-        m3_diff,
-        m6_diff,
-        m3_m6diff,
-        m3_m12diff,
+        m6,
+        m12,
     )
 
     #######################
@@ -113,65 +100,41 @@ def make_features():
     # Get mean and STD for last few months for client
     aum_std = aum_sums.std(level="client_id", skipna=True)
     aum_mean = aum_sums.mean(level="client_id", skipna=True)
-    aum_volatility = aum_std / aum_mean
 
     # Get the average amount in the last month
-    last_month_aum = aum_sums.iloc[
+    aum_last = aum_sums.iloc[
         aum_sums.index.get_level_values("month_end_dt") == "2019-08-31"
     ]
-    last_month_aum.index = last_month_aum.index.droplevel(["month_end_dt", "quarter"])
+    aum_last.index = aum_last.index.droplevel(["month_end_dt", "quarter"])
 
     # Get quarter averages
     aum_sums_q = aum_sums.mean(level=["client_id", "quarter"])
 
-    # Get last month avg - 3 months avg
     m3 = aum_sums_q[aum_sums_q.index.get_level_values("quarter") == "Q4"].droplevel(1)
-    m3_diff = last_month_aum - m3
-
-    # Get last month avg - 6 months avg
-    m6_diff = aum_sums_q[
+    m6 = aum_sums_q[
         aum_sums_q.index.get_level_values("quarter").isin(["Q4", "Q3"])
     ].mean(level=0)
-    m6_diff = last_month_aum - m6_diff
-
-    # Get last 3 months - last 6 months
-    m3_m6diff = m6_diff - m3_diff
-
-    # Get last 3 months - last 12 months
-    m3_m12diff = aum_sums_q.mean(level=0)
-    m3_m12diff = m3 - m3_m12diff
+    m12 = aum_sums_q.mean(level=0)
 
     # Create features
     aum_ft = pd.DataFrame(
         {
             "aum_std": aum_std,
-            "aum_last": last_month_aum,
+            "aum_last": aum_last,
             "aum_m3": m3,
             "aum_all_avg": aum_mean,
-            "aum_volatility": aum_volatility,
-            "aum_diff_m3": m3_diff,
-            "aum_diff_m6": m6_diff,
-            "aum_diff_m3_m6": m3_m6diff,
-            "aum_diff_m3_m12": m3_m12diff,
-            "aum_diff_m3_rel": m3_diff / last_month_aum,
-            "aum_diff_m6_rel": m6_diff / last_month_aum,
-            "aum_diff_m3_m6_rel": m3_m6diff / last_month_aum,
-            "aum_diff_m3_m12_rel": m3_m12diff / last_month_aum,
+            "aum_volatility": aum_std / aum_mean,
+            "aum_diff_m3": aum_last - m3,
+            "aum_diff_m6": aum_last - m6,
+            "aum_diff_m3_m6": m3 - m6,
+            "aum_diff_m3_m12": m3 - m12,
+            "aum_diff_m3_rel": (aum_last - m3) / aum_last,
+            "aum_diff_m6_rel": (aum_last - m6) / aum_last,
+            "aum_diff_m3_m6_rel": (m3 - m6) / aum_last,
+            "aum_diff_m3_m12_rel": (m3 - m12) / aum_last,
         }
     )
-    del (
-        aum,
-        aum_sums,
-        aum_std,
-        aum_mean,
-        last_month_aum,
-        aum_sums_q,
-        m3,
-        m3_diff,
-        m6_diff,
-        m3_m6diff,
-        m3_m12diff,
-    )
+    del aum, aum_sums, aum_std, aum_mean, aum_last, aum_sums_q, m3, m6, m12
 
     #######################
     # Make client features
@@ -221,30 +184,71 @@ def make_features():
     # Make payment features
     payments = pd.read_csv("data/payments.csv")
 
-    # Get pensioneers
-    pensioneers = payments.query('pmnts_name == "Pension receipts"').client_id.unique()
-    pensioneers = pd.DataFrame({"is_pensioneer": 1}, index=pensioneers)
-
-    # Get date to first of month for grouping
     payments["month"] = pd.to_datetime(payments["day_dt"]).apply(
         lambda x: x + MonthEnd(1)
     )
-    payments_months = (
-        payments.groupby(["client_id", "month"]).sum("sum_rur").reset_index()
-    )
-    del payments
+    payments["month"] = payments["month"].apply(lambda x: x.strftime("%Y-%m-%d"))
+    payments["quarter"] = payments["month"].replace(months_to_quarters)
 
-    payments_months = payments_months.pivot(index="client_id", columns="month")
-    payments_months.columns = [
-        f'payments_{c[1].strftime("%Y_%m_%d")}' for c in payments_months.columns
+    # Get pensioneers
+    pensioneers = payments.query('pmnts_name == "Pension receipts"').client_id.unique()
+    pensioneers = pd.Series(1.0, index=pensioneers)
+
+    payments_sums = payments.groupby(["client_id", "month", "quarter"])["sum_rur"].sum()
+
+    # Get mean and STD for last few months for client
+    payments_std = payments_sums.std(level="client_id", skipna=True)
+    payments_mean = payments_sums.mean(level="client_id", skipna=True)
+
+    # Get payments last month
+    payments_last = payments_sums.iloc[
+        payments_sums.index.get_level_values("month") == "2019-08-31"
     ]
-    payments_months["payments_mean"] = payments_months.mean(axis=1)
-    payments_months["payments_std"] = payments_months.std(axis=1)
+    payments_last.index = payments_last.index.droplevel(["month", "quarter"])
 
-    payments_ft = pd.concat([payments_months, pensioneers], axis=1).fillna(
-        {"is_pensioneer": 0}
+    # Get quarter averages
+    payments_sums_q = payments_sums.mean(level=["client_id", "quarter"])
+
+    m3 = payments_sums_q[
+        payments_sums_q.index.get_level_values("quarter") == "Q4"
+    ].droplevel(1)
+    m6 = payments_sums_q[
+        payments_sums_q.index.get_level_values("quarter").isin(["Q4", "Q3"])
+    ].mean(level=0)
+    m12 = payments_sums_q.mean(level=0)
+
+    # Create features
+    payments_ft = pd.DataFrame(
+        {
+            "is_pensioneer": pensioneers,
+            "payments_std": payments_std,
+            "payments_last": payments_last,
+            "payments_m3": m3,
+            "payments_m6": m6,
+            "payments_all_avg": payments_mean,
+            "payments_volatility": payments_std / payments_mean,
+            "payments_diff_m3": payments_last - m3,
+            "payments_diff_m6": payments_last - m6,
+            "payments_diff_m3_m6": m3 - m6,
+            "payments_diff_m3_m12": m3 - m12,
+            "payments_diff_m3_rel": (payments_last - m3) / payments_last,
+            "payments_diff_m6_rel": (payments_last - m6) / payments_last,
+            "payments_diff_m3_m6_rel": (m3 - m6) / payments_last,
+            "payments_diff_m3_m12_rel": (m3 - m12) / payments_last,
+        }
+    ).fillna({"is_pensioneer": 0})
+    del (
+        payments,
+        payments_sums,
+        payments_std,
+        payments_mean,
+        payments_last,
+        payments_sums_q,
+        m3,
+        m6,
+        m12,
+        pensioneers,
     )
-    del payments_months, pensioneers
 
     ############################
     # Caclculate mystery features
