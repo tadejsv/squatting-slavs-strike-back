@@ -50,8 +50,9 @@ Here we list our results, so we can stay updated with what scores we are getting
 
 ### Tadej
 
-| name        | val_score  | test_score | submission score | 
+| name        | val_score  | test_score | submission score |
 | ------------|:----------:|:----------:|:----------------:|
+| client + balance + aum feats with regressor + *log profit* + *threshold* | 5906.70 | 5516.17 | ?? |
 | client + balance + aum feats *with regressor* | 5792.52 | 5289.16 | 5381.18 |
 | client + balance + aum feats  | 3607.06 | 2944.95 | 3101.47 |
 | client + balance feats  | 3345.24 | 3074.36 | 2907.5 |
@@ -60,13 +61,13 @@ Here we list our results, so we can stay updated with what scores we are getting
 
 ### Marina
 
-| name        | val_score  | test_score | submission score | 
+| name        | val_score  | test_score | submission score |
 | ------------|:----------:|:----------:|:----------------:|
 | ??  | ?? | ?? | ?? |
 
 ### Anastasia
 
-| name        | val_score  | test_score | submission score | 
+| name        | val_score  | test_score | submission score |
 | ------------|:----------:|:----------:|:----------------:|
 | transaction + client + balance + aum feats *with regressor*   | 5432.08 | 3001.63 | 5476.3 |
 
