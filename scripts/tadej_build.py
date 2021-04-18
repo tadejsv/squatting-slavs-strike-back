@@ -224,22 +224,12 @@ def make_features():
             "is_pensioneer": pensioneers,
             "payments_std": payments_std,
             "payments_last": payments_last,
-            # "payments_m3": m3,
-            # "payments_m6": m6,
             "payments_all_avg": payments_mean,
             "payments_volatility": payments_std / payments_mean,
-            # "payments_diff_m3": payments_last - m3,
-            # "payments_diff_m6": payments_last - m6,
-            # "payments_diff_m3_m6": m3 - m6,
-            # "payments_diff_m3_m12": m3 - m12,
-            # "payments_diff_m3_rel": (payments_last - m3) / m3,
-            # "payments_diff_m6_rel": (payments_last - m6) / m3,
-            # "payments_diff_m3_m6_rel": (m3 - m6) / m3,
-            # "payments_diff_m3_m12_rel": (m3 - m12) / m3,
         }
     ).fillna({"is_pensioneer": 0})
 
-    payments_raw_ft = payments_sums.droplevel("quarter").unstack()
+    payments_raw_ft = payments_sums.droplevel('quarter').unstack().rename(columns= lambda x: f'payments_{x}')
 
     del (
         payments,
