@@ -101,6 +101,22 @@ def make_features():
         "nan"
     )
 
+    #######################
+    # Make transaction features
+    column_names = ['client_id', 'tran_amt_rur', 'mcc_cd']
+    transaction = pd.read_csv('data/trxn.csv', usecols=column_names)
+    transaction_ft = transaction[column_names]
+    del transaction
+    gc.collect()
+    transaction_ft['mcc_cd'] = transaction_ft['mcc_cd'].astype('str')
+
+    temp_trs = transaction_ft.groupby(['client_id', 'mcc_cd']).sum().reset_index()
+    transaction_ft = temp_trs.loc[temp_trs.groupby('client_id').tran_amt_rur.idxmax()]
+    transaction_ft = transaction_ft.set_index('client_id')
+    transaction_ft['tran_amt_rur'] = transaction_ft['tran_amt_rur'].fillna('nan')
+    del temp_trs
+    gc.collect()
+
     #############################
     # Merge all features and save
 
@@ -108,7 +124,9 @@ def make_features():
         balance_ft,
         client_ft,
         aum_ft,
+        transaction_ft,
     ], axis=1)
+    full_data = full_data.fillna({'mcc_cd': 'nan'})    
     full_data.to_pickle('final_version.pickle')
 
 

@@ -4,7 +4,7 @@ from catboost import CatBoostRegressor, Pool
 
 
 def predict():
-    CAT_FEATURES = ['gender', 'region', 'city', 'education']
+    CAT_FEATURES = ['gender', 'region', 'city', 'education',  'mcc_cd']
 
     try:
         model = CatBoostRegressor().load_model('models/tadej_model.cbm', 'cbm')
