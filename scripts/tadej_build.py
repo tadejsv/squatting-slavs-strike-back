@@ -26,7 +26,7 @@ def make_features():
     #######################
     # Make balance features
 
-    balances = pd.read_csv("train_data/balance.csv")
+    balances = pd.read_csv("data/balance.csv")
     balances["quarter"] = balances["month_end_dt"].replace(months_to_quarters)
 
     # Sum up across all accounts by month
@@ -102,7 +102,7 @@ def make_features():
     #######################
     # Make aum features
 
-    aum = pd.read_csv("train_data/aum.csv")
+    aum = pd.read_csv("data/aum.csv")
     aum["quarter"] = aum["month_end_dt"].replace(months_to_quarters)
 
     # Sum up across all accounts for each month
