@@ -14,7 +14,8 @@ def predict():
     data = pd.read_pickle('final_version.pickle')
     data_pool = Pool(data = data, cat_features=CAT_FEATURES)
 
-    target = (model.predict(data_pool) > 0).astype(int)
+    THRESHOLD = -2.3
+    target = (model.predict(data_pool) > THRESHOLD).astype(int)
     submission = pd.DataFrame({'client_id': data.index, 'target': target})
     submission.to_csv('submission.csv', index=False)
 

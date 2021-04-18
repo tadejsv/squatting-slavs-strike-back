@@ -1,3 +1,3 @@
 set -ex
 export PATH=/usr/conda/bin:"$PATH"
-python scripts/ana_build.py
+python scripts/tadej_build.py
