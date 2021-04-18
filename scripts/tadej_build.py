@@ -68,10 +68,10 @@ def make_features():
             "balance_diff_m6": balance_last - m6,
             "balance_diff_m3_m6": m3 - m6,
             "balance_diff_m3_m12": m3 - m12,
-            "balance_diff_m3_rel": (balance_last - m3) / balance_last,
-            "balance_diff_m6_rel": (balance_last - m6) / balance_last,
-            "balance_diff_m3_m6_rel": (m3 - m6) / balance_last,
-            "balance_diff_m3_m12_rel": (m3 - m12) / balance_last,
+            "balance_diff_m3_rel": (balance_last - m3) / m3,
+            "balance_diff_m6_rel": (balance_last - m6) / m3,
+            "balance_diff_m3_m6_rel": (m3 - m6) / m3,
+            "balance_diff_m3_m12_rel": (m3 - m12) / m3,
         }
     )
     del (
@@ -128,10 +128,10 @@ def make_features():
             "aum_diff_m6": aum_last - m6,
             "aum_diff_m3_m6": m3 - m6,
             "aum_diff_m3_m12": m3 - m12,
-            "aum_diff_m3_rel": (aum_last - m3) / aum_last,
-            "aum_diff_m6_rel": (aum_last - m6) / aum_last,
-            "aum_diff_m3_m6_rel": (m3 - m6) / aum_last,
-            "aum_diff_m3_m12_rel": (m3 - m12) / aum_last,
+            "aum_diff_m3_rel": (aum_last - m3) / m3,
+            "aum_diff_m6_rel": (aum_last - m6) / m3,
+            "aum_diff_m3_m6_rel": (m3 - m6) / m3,
+            "aum_diff_m3_m12_rel": (m3 - m12) / m3,
         }
     )
     del aum, aum_sums, aum_std, aum_mean, aum_last, aum_sums_q, m3, m6, m12
@@ -231,12 +231,15 @@ def make_features():
             "payments_diff_m6": payments_last - m6,
             "payments_diff_m3_m6": m3 - m6,
             "payments_diff_m3_m12": m3 - m12,
-            "payments_diff_m3_rel": (payments_last - m3) / payments_last,
-            "payments_diff_m6_rel": (payments_last - m6) / payments_last,
-            "payments_diff_m3_m6_rel": (m3 - m6) / payments_last,
-            "payments_diff_m3_m12_rel": (m3 - m12) / payments_last,
+            "payments_diff_m3_rel": (payments_last - m3) / m3,
+            "payments_diff_m6_rel": (payments_last - m6) / m3,
+            "payments_diff_m3_m6_rel": (m3 - m6) / m3,
+            "payments_diff_m3_m12_rel": (m3 - m12) / m3,
         }
     ).fillna({"is_pensioneer": 0})
+
+    payments_raw_ft = payments_sums.droplevel("quarter").unstack()
+
     del (
         payments,
         payments_sums,
@@ -263,7 +266,15 @@ def make_features():
     # Merge all features and save
 
     full_data = pd.concat(
-        [balance_ft, aum_ft, client_ft, transaction_ft, payments_ft, mystery_feats],
+        [
+            balance_ft,
+            aum_ft,
+            client_ft,
+            transaction_ft,
+            payments_ft,
+            payments_raw_ft,
+            mystery_feats,
+        ],
         axis=1,
     )
     full_data = full_data.fillna({"mcc_cd": "nan"})
