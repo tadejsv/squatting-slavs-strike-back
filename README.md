@@ -52,6 +52,7 @@ Here we list our results, so we can stay updated with what scores we are getting
 
 | name        | val_score  | test_score | submission score |
 | ------------|:----------:|:----------:|:----------------:|
+| below + simplify payments fts |  5998.36 | 5637.98 | 5598.47 |
 | below + simplify balance + aum fts |  6021.99 | 5692.18 | 5637.70 |
 | below + payment + mystery fts | 5961.78 | 5597.67 | 5617.60 |
 | below + transaction fts | 5887.00 | 5442.85 |  |
