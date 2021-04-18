@@ -1,5 +1,6 @@
 from typing import Tuple
 
+import numpy as np
 import pandas as pd
 
 
@@ -37,3 +38,7 @@ def calculate_profit(df: pd.DataFrame) -> pd.Series:
     profit = df["sale_flg"] * df["sale_amount"].fillna(0) - df["contacts"] * CALL_COST
 
     return profit
+
+
+def signed_log10_1p(x):
+    return np.sign(x) * np.log10(np.abs(x) + 1)
