@@ -103,15 +103,15 @@ def make_features():
     
     #######################
     # Make transaction features
-    transaction = pd.read_csv('data/trxn.csv')
-    column_names = ['client_id', 'tran_amt_rur', 'mcc_cd']
-    transaction_ft = transaction[column_names]
-    transaction_ft['mcc_cd'] = transaction_ft['mcc_cd'].astype('str')
+#     transaction = pd.read_csv('data/trxn.csv')
+#     column_names = ['client_id', 'tran_amt_rur', 'mcc_cd']
+#     transaction_ft = transaction[column_names]
+#     transaction_ft['mcc_cd'] = transaction_ft['mcc_cd'].astype('str')
 
-    temp_trs = transaction_ft.groupby(['client_id', 'mcc_cd']).sum().reset_index()
-    transaction_ft = temp_trs.loc[temp_trs.groupby('client_id').tran_amt_rur.idxmax()]
-    transaction_ft = transaction_ft.set_index('client_id')
-    transaction_ft['tran_amt_rur'] = transaction_ft['tran_amt_rur'].fillna('nan')
+#     temp_trs = transaction_ft.groupby(['client_id', 'mcc_cd']).sum().reset_index()
+#     transaction_ft = temp_trs.loc[temp_trs.groupby('client_id').tran_amt_rur.idxmax()]
+#     transaction_ft = transaction_ft.set_index('client_id')
+#     transaction_ft['tran_amt_rur'] = transaction_ft['tran_amt_rur'].fillna('nan')
 
 
     #############################
@@ -121,9 +121,9 @@ def make_features():
     full_data = pd.concat([
         balance_ft,
         client_ft,
-        transaction_ft
+#         transaction_ft
     ], axis=1)
-    full_data[['mcc_cd', 'tran_amt_rur']] = full_data[['mcc_cd', 'tran_amt_rur']].fillna('nan')
+#     full_data[['mcc_cd', 'tran_amt_rur']] = full_data[['mcc_cd', 'tran_amt_rur']].fillna('nan')
     full_data.to_pickle('final_version.pickle')
 
 
