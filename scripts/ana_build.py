@@ -107,15 +107,10 @@ def make_features():
     column_names = ['client_id', 'tran_amt_rur', 'mcc_cd']
     transaction_ft = transaction[column_names]
     transaction_ft['mcc_cd'] = transaction_ft['mcc_cd'].astype('str')
-    
+
     temp_trs = transaction_ft.groupby(['client_id', 'mcc_cd']).sum().reset_index()
-    clients = temp_trs.client_id.unique()
-    max_ids = []
-    for cl in clients:
-        client_df_temp = temp_trs[temp_trs['client_id'] == cl]
-        max_ids.append(client_df_temp.tran_amt_rur.idxmax())
-    
-    transaction_ft = temp_trs.iloc[max_ids].set_index('client_id')
+    transaction_ft = temp_trs.loc[temp_trs.groupby('client_id').tran_amt_rur.idxmax()]
+    transaction_ft = transaction_ft.set_index('client_id')
     transaction_ft['tran_amt_rur'] = transaction_ft['tran_amt_rur'].fillna('nan')
 
 
