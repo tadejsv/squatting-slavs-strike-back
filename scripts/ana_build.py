@@ -103,7 +103,7 @@ def make_features():
     
     #######################
     # Make transaction features
-#     transaction = pd.read_csv('data/trxn.csv')
+    transaction = pd.read_csv('data/trxn.csv')
 #     column_names = ['client_id', 'tran_amt_rur', 'mcc_cd']
 #     transaction_ft = transaction[column_names]
 #     transaction_ft['mcc_cd'] = transaction_ft['mcc_cd'].astype('str')
