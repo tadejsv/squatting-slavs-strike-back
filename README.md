@@ -10,7 +10,7 @@ How to replicate:
 ```sh
 git@github.com:tadejsv/squatting-slavs-strike-back.git && git checkout best
 ```
-3. Run the notebook `tadej5.ipynb`. You can do this in the Dockerfile-based remote container (VSCode). At the end you should have a file `models/tadej_model.cbm` - this is our model.
+3. Run the notebook `dev_tadej5.ipynb`. You can do this in the Dockerfile-based remote container (VSCode). At the end you should have a file `models/tadej_model.cbm` - this is our model.
 4. To generate our submission, execute (update git to latest stable verion first)
 
 ```sh
